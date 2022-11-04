@@ -37,18 +37,8 @@ const BlogSchema = new mongoose.Schema ({
         required: true
     },
 
-    tags: [String],
-
-    createAt : {
-        type: Date,
-        default: Date.now
-    },
-    lastUpdateAt : {
-        type: Date,
-        default: Date.now
-    },
-    
-})
+    tags: [String],    
+}, {timestamps: true})
 
  const BlogModel = mongoose.model('Blog', BlogSchema)
 

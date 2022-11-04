@@ -1,10 +1,6 @@
 const express = require('express');
-const passport = require('passport');
 const BlogsRouter = require('./routes/blogRoutes')
 const authRoute = require('./routes/authRoute')
-
-
-
 
 require('./AuthMW/authenticate') //sign up and sign autheentication middleware
 

@@ -35,7 +35,6 @@ passport.use(
             //  console.log('hiiiii')
             try{
                 const {first_name, last_name} = req.body;
-                console.log(req.body);
                 const user = await userModel.create({first_name, last_name, email, password});
                 return done(null, user);
             } catch(error){

@@ -1,13 +1,57 @@
 const {BlogModel, blogState} = require('../models/blogsModel')
+const moment = require ('moment')
 
 
 exports.getBlogs = async (req, res) => {
-   
+   const {query } = req;
+   const {
+    timestamps,
+      author,
+      title,
+      read_count = 'asc',
+      reading_time = 'asc',
+      order_by = 'timestamps'
+   } = query;
+
+   const findQuery = {};
+
+   if (timestamps) {
+    findQuery.timestamps = {
+        $gt: moment(timestamps).startOf('day').toDate(),
+        $gt: moment(timestamps).endOf('day').toDate(),
+    }
+   }
+
+   if(author) {
+    findQuery.author = author;
+   }
+
+   if(title) {
+    findQuery.title = title;
+   }
+   if(tags) {
+    findQuery.tags = tags;
+   }
+   const sortQuery = {};
+   const sortAttributes = order_by.split(',')
+
+   for(const attribute of sortAttributes) {
+    if(read_count === 'asc' && reading_time === 'asc'){
+        sortQuery[attribute] = 1
+    }
+    if(read_count === 'desc' && reading_time === 'desc'){
+        sortQuery[attribute] = -1
+   }
+}
+
     const {page = 1, limit = 20} = req.query; //Pagination
-   await BlogModel.find({state: blogState.published})
+
+   await BlogModel.find({state: blogState.published}, findQuery)
    .limit(limit * 1)
    .skip((page -1)* limit)
    .populate('author', '-password -__v' ) // returning author information
+   .find(findQuery)
+   .sort(sortQuery)
         .then(blogs => {
             res.status(200).json(blogs)
         })
@@ -48,7 +92,7 @@ exports.addBlog = async (req, res) => {
 }
 
 
-//updatind blog state
+//update blog state
 exports.updateBlog = async (req, res, next) => {
     try {
     const id = req.params.id
@@ -74,8 +118,5 @@ exports.deleteBlog = (req, res) => {
             res.status(500).send(err)
         })
 }
-
-
-
 
 
