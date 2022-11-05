@@ -1,4 +1,4 @@
-const {BlogModel, blogState} = require('../models/blogsModel')
+const {BlogModel, blogState} = require('../Models/blogsModel')
 const moment = require ('moment')
 
 
