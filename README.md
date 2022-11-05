@@ -4,24 +4,30 @@ This is an api for Blogs
 ---
 
 ## Requirements
-1. User should be able to register 
+1. A user should be able to sign up and sign in into the blog app 
 2. User should be able to login with Passport using JWT
-3. Implement basic auth
-4. User should be able to get orders
-5. Users should be able to create orders
-6. Users should be able to update and delete orders
-7. Test application
----
-## Setup
-- Install NodeJS, mongodb
-- pull this repo
-- update env with example.env
-- run `npm run start:dev`
+3. Users should have a first_name, last_name, email, password, (you can add other attributes you want to store about the user)
+4. Use JWT as authentication strategy and expire the token after 1 hour
+5. A blog can be in two states; draft and published
+6. Logged in and not logged in users should be able to get a list of published blogs created
+7. When a blog is created, it is in draft state.
+8. The owner of the blog should be able to update the state of the blog to published
+9.  The owner of the blog should be able to delete the blog in draft or published state
+10. The owner of the blog should be able to get a list of their blogs. 
+   a. The endpoint should be paginated
+   b. It should be filterable by state
+
+11. Blogs created should have title, description, tags, author, timestamp, state, read_count, reading_time and body.
+12. The list of blogs endpoint that can be accessed by both logged in and not logged in users should be paginated, 
+  a. default it to 20 blogs per page
+  b. It should also be searchable by author, title and tags.
+  c. It should also be orderable by read_count, reading_time and timestamp
+
+12. When a single blog is requested, the api should return the user information(the author) with the blog. The read_count of the blog too should be updated by 1
+12. Come up with any algorithm for calculating the reading_time of the blog.
+12. Test application
 
 ---
-## Base URL
-- somehostsite.com
-
 
 ## Models
 ---
@@ -30,26 +36,22 @@ This is an api for Blogs
 | field  |  data_type | constraints  |
 |---|---|---|
 |  id |  string |  required |
-|  username |  string |  required |
-|  firstname | string  |  optional|
-|  lastname  |  string |  optional  |
-|  email     | string  |  optional |
+|  email |  string |  required |
+|  first_name | string  |  required|
+|  last_name  |  string |  optional  |
 |  password |   string |  required  |
-|  user_type |  string |  required, default: user, enum: ['user', 'admin'] |
 
 
-### Order
+### Blog
 | field  |  data_type | constraints  |
 |---|---|---|
-|  id |  string |  required |
-|  created_at |  date |  required |
-|  state | number  |  required,default:1|
-|  total_price  |  number |  required  |
-|  items     | array  |  required |
-|  item.name |   string |  required  |
-|  item.price |  number |  required |
-|  item.size |  string |  required, enum: ['m', 's', 'l'] |
-|  item.quantity |  number |  required, enum: ['m', 's', 'l'] |
+|  title |  string |  required, unique |
+|  description |  date |  required |
+|  author | ObjectId  |  required |
+|  read_count |  number |  required, default: 0  |
+|  reading_time     | string  |  required |
+|  tags |   string |  required  |
+|  state|  string |  required, enum: ['draft', 'published'], default: 'draft' |
 
 
 
@@ -65,27 +67,11 @@ This is an api for Blogs
 {
   "email": "doe@example.com",
   "password": "Password1",
-  "firstname": "jon",
-  "lastname": "doe",
-  "username": 'jon_doe",
+  "firs_tname": "jon",
+  "last_name": "doe"
 }
 ```
 
-- Responses
-
-Success
-```
-{
-    message: 'Signup successful',
-    user: {
-        "email": "doe@example.com",
-        "password": "Password1",
-        "firstname": "jon",
-        "lastname": "doe",
-        "username": 'jon_doe",
-    }
-}
-```
 ---
 ### Login User
 
@@ -95,7 +81,7 @@ Success
 ```
 {
   "password": "Password1",
-  "username": 'jon_doe",
+  "email": '"doe@example.com"",
 }
 ```
 
@@ -110,77 +96,11 @@ Success
 ```
 
 ---
-### Create Order
 
-- Route: /orders
-- Method: POST
-- Header
-    - Authorization: Bearer {token}
-- Body: 
-```
-{
-    items: [{ name: 'chicken pizza', price: 900, size: 'm', quantity: 1}]
-}
-```
 
-- Responses
 
-Success
-```
-{
-    state: 1,
-    total_price: 900,
-    created_at: Mon Oct 31 2022 08:35:00 GMT+0100,
-    items: [{ name: 'chicken pizza', price: 900, size: 'm', quantity: 1}]
-}
-```
----
-### Get Order
-
-- Route: /orders/:id
-- Method: GET
-- Header
-    - Authorization: Bearer {token}
-- Responses
-
-Success
-```
-{
-    state: 1,
-    total_price: 900,
-    created_at: Mon Oct 31 2022 08:35:00 GMT+0100,
-    items: [{ name: 'chicken pizza', price: 900, size: 'm', quantity: 1}]
-}
-```
----
-
-### Get Orders
-
-- Route: /orders
-- Method: GET
-- Header:
-    - Authorization: Bearer {token}
-- Query params: 
-    - page (default: 1)
-    - per_page (default: 10)
-    - order_by (default: created_at)
-    - order (options: asc | desc, default: desc)
-    - state
-    - created_at
-- Responses
-
-Success
-```
-{
-    state: 1,
-    total_price: 900,
-    created_at: Mon Oct 31 2022 08:35:00 GMT+0100,
-    items: [{ name: 'chicken pizza', price: 900, size: 'm', quantity: 1}]
-}
-```
----
 
 ...
 
 ## Contributor
-- Akanni Agbolahan
+- Akanni Agbolahan Babatunde
