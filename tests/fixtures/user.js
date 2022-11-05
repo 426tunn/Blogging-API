@@ -1,50 +1,50 @@
 module.exports = {
     validUser: {
-        firstName: "Ben",
-        lastName: "White",
-        email: "benwhite@gmail.com",
-        password: "BenWhite"
+        first_name: "agbolacchan",
+        last_name: "babatunde",
+        email: "bigef@gmail.com",
+        password: "ogyaranyaaa"
     },
     noFirstname: {
-        firstName: "",
-        lastName: "White",
-        email: "benwhite@gmail.com",
-        password: "BenWhite"
+        first_name: "",
+        last_name: "White",
+        email: "benjohnson@gmail.com",
+        password: "benjohnson"
     },
     noLastname: {
-        firstName: "Ben",
-        lastName: "",
-        email: "benwhite@gmail.com",
-        password: "BenWhite"
+        first_name: "dayo",
+        last_name: "",
+        email: "benjohnson@gmail.com",
+        password: "benjohnson"
     },
     noEmail: {
-        firstName: "Ben",
-        lastName: "White",
+        first_name: "dayo",
+        last_name: "White",
         email: "",
-        password: "BenWhite"
+        password: "benjohnson"
     },
     invalidEmail: {
-        firstName: "Ben",
-        lastName: "White",
+        first_name: "dayo",
+        last_name: "White",
         email: "jones.com",
-        password: "BenWhite"
+        password: "benjohnson"
     },
     noPassword: {
-        firstName: "Ben",
-        lastName: "White",
-        email: "benwhite@gmail.com",
+        first_name: "dayo",
+        last_name: "White",
+        email: "bennjohnson@gmail.com",
         password: ""
     },
     validLogin: {
-        email: "benwhite@gmail.com",
-        password: "BenWhite"
+        email: "benjohnson@gmail.com",
+        password: "benjohnson"
     },
     invalidEmailLogin: {
         email: "wrong@gmail.com",
-        password: "BenWhite"
+        password: "benjohnson"
     },
     invalidPasswordLogin: {
-        email: "benwhite@gmail.com",
+        email: "benjohnson@gmail.com",
         password: "wrong"
     }
 }

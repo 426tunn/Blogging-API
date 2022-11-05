@@ -8,6 +8,7 @@ exports.getBlogs = async (req, res) => {
     timestamps,
       author,
       title,
+      tags,
       read_count = 'asc',
       reading_time = 'asc',
       order_by = 'timestamps'
@@ -93,11 +94,13 @@ exports.addBlog = async (req, res) => {
 
 
 //update blog state
-exports.updateBlog = async (req, res, next) => {
+exports.updateBlogToPublished = async (req, res, next) => {
     try {
-    const id = req.params.id
-    blog.lastUpdateAt = new Date() // set the lastUpdateAt to the current date
-    const blog = await BlogModel.findById(id)
+    const blogId = req.params.id
+    const blog = await BlogModel.findById(blogId)
+    if (!blog.author.equals(req.user.id)) {
+        return res.status(403).json({error: "This blog doesn't belong to you. You can only update your blog."})
+    }    
     if(blog.state === blogState.published) return res.status(401).json({error: "Blog already published"})
    blog.state = blogState.published;
    await blog.save();

@@ -32,7 +32,7 @@ passport.use(
             passReqToCallback: true
          },
            async(req, email, password, done)=> {
-            //  console.log('hiiiii')
+            
             try{
                 const {first_name, last_name} = req.body;
                 const user = await userModel.create({first_name, last_name, email, password});
