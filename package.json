@@ -1,5 +1,5 @@
 {
-  "name": "Blogging-API",
+  "name": "blogging-api",
   "version": "1.0.0",
   "description": "Authenticating  Blog",
   "main": "app.js",
