@@ -28,7 +28,7 @@ const signup_post = (req, res, next) => {
 
                         const body = {_id: user._id, email: user.email};
 
-                        const token = jwt.sign({user: body}, process.env.JWT_SECRET, {expiresIn: "1hr"});
+                        const token = jwt.sign({user: body}, process.env.JWT_SECRET, {expiresIn: "1hr"}); 
                          
                         return res.json({message: 'Logged in successfully', token})
                     })

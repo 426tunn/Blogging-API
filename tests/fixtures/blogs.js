@@ -9,7 +9,7 @@ module.exports = {
           last_name: "benson",
           id: "63604afad6eb2202e950c860"
         },
-        state: "published",
+        state: "draft",
         read_count: 1,
         body: "This is just a sample dawg",
         tags: [

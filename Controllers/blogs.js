@@ -78,6 +78,13 @@ exports.getBlogbyID = async (req, res)  => {
 
 exports.addBlog = async (req, res) => {
     const blog = req.body;
+    const exists = await BlogModel.findOne({ title: req.body.title });
+    if (exists) {
+        return res
+            .status(400)
+            .json({ status: false, error: "Blog already exists" });
+    }
+
     const wordCount = blog.body.split(" ").length;
     const reading_time = `${Math.floor(wordCount/200)} minute(s)`;
     blog.lastUpdateAt = new Date() // set the lastUpdateAt to the current date
@@ -98,7 +105,8 @@ exports.updateBlogToPublished = async (req, res, next) => {
     try {
     const blogId = req.params.id
     const blog = await BlogModel.findById(blogId)
-    if (!blog.author.equals(req.user.id)) {
+    blog.author = req.user._id;
+    if (!blog.author) {
         return res.status(403).json({error: "This blog doesn't belong to you. You can only update your blog."})
     }    
     if(blog.state === blogState.published) return res.status(401).json({error: "Blog already published"})
@@ -111,15 +119,58 @@ exports.updateBlogToPublished = async (req, res, next) => {
     }
 }
 
-exports.deleteBlog = (req, res) => {
-    const id = req.params.id
-    BlogModel.findByIdAndRemove(id)
-        .then(blog => {
-            res.status(200).send(blog)
-        }).catch(err => {
-            console.log(err)
-            res.status(500).send(err)
-        })
+exports.editBlog = async (req, res, next) => {
+    try {
+        
+        const blogId = req.params.id
+        const {title, description, body, tags} = req.body;
+        if(await BlogModel.findOne({title})){
+            return res.status(403).json({status: false, error: "This Title is taken"})
+        }
+
+        const blog = await BlogModel.findById(blogId)
+        
+        blog.author = req.user._id;
+        if (!blog.author) {
+            return res.status(403).json({error: "This blog doesn't belong to you. You can only edit your blog."})
+        }    
+        if(!blog){
+            return res
+            .status(404)
+            .json({status: false,
+            error: "Blog not found"})
+        }
+        if (!blog.author.equals(req.user.id)) {
+            return res.status(403).json({error: "This blog doesn't belong to you. You can only update your blog."})
+        }    
+        blog.title = title || blog.title;
+        blog.description = description || blog.description;
+        blog.body = body ||blog.body;
+       await blog.save();
+       blog.tags = (await blog.cleanAndSaveTags(tags)) || blog.tags;    
+       res.status(200).json({status: true, blog})
+        } catch(error){
+            next(error);
+        }
+}
+
+exports.deleteBlog = async (req, res, next) => {
+    try {
+        const blogId = req.params.id
+       
+    return res
+            .status(404)
+            .json({status: false,
+            error: "Blog not found"})
+    await BlogModel.findByIdAndDelete(blogId);
+    res.status(200).json({
+        status: true,
+        message: "Blog deleted successfully"
+    })
+        
+    } catch(err) {
+            next(err);
+        }
 }
 
 

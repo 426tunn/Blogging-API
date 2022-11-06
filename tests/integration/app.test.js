@@ -1,22 +1,5 @@
 const supertest = require('supertest');
-const app = require('../../index.js')
-const mongoose = require ("mongoose")
-
-
-
-beforeAll( () =>{
-    mongoose.connect('mongodb://localhost:27017')
-    mongoose.connection.on("connected", ()=> {
-       console.log('Mongoose Connected')
-    });
-    mongoose.connection.on('error', (err)=> {
-       console.log('Connection Failed', err)
-    });
-})
-
-afterAll( () => {
-    mongoose.connection.close()
-});
+const app = require('../../index')
 
 
 describe("Application works", () => {
@@ -26,3 +9,4 @@ describe("Application works", () => {
         expect(request.headers['content-type']).toContain("application/json");
     })
 });
+

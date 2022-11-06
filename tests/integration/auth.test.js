@@ -1,91 +1,53 @@
-const supertest = require('supertest');
-const app = require('../../index.js')
+const request = require('supertest');
+const app = require('../../index')
 const fixtures = require('../fixtures/user')
-const mongoose = require ("mongoose")
+const UserModel = require('../../Models/userModel')
+const { connect } = require('../database')
 
 
+describe('Auth: Signup', () => {
+    let conn;
 
-beforeAll( () =>{
-    mongoose.connect('mongodb://localhost:27017')
-    mongoose.connection.on("connected", ()=> {
-       console.log('Mongoose Connected')
-    });
-    mongoose.connection.on('error', (err)=> {
-       console.log('Connection Failed', err)
-    });
-})
+    beforeAll(async () => {
+        conn = await connect()
+    })
 
-afterAll( () => {
-    mongoose.connection.close()
-});
+    afterEach(async () => {
+        await conn.cleanup()
+    })
 
-describe('Signup post request successful', ()=> {
-    
-    it("should register user successfully", async ()=> {
-        const request = await supertest(app).post("/signup")
+    afterAll(async () => {
+        await conn.disconnect()
+    })
+
+    it('should signup a user', async () => {
+        const response = await request(app).post('/signup')
         .set('content-type', 'application/json')
-        .send(fixtures.validUser);
-        expect(request.status).toBe(200);
-         expect(request.headers['content-type']).toContain("application/json");
-         expect(request.body.user.email).toEqual(fixtures.valid.email);
-         expect(request.body.user.first_name).toEqual(fixtures.valid.first_name);
-         expect(request.body.user.last_name).toEqual(fixtures.valid.last_name);
-         expect(await bcrypt.compare(fixtures.valid.password, request.body.user.password)).toBeTruthy();
-    })
+        .send(fixtures.validUser)
 
-    
-    it("should not register user successfully due to no firstname", async () => {
-        const request = await supertest(app).post("/signup").send(fixtures.noFirstname);
-        expect(request.status).toBe(500);
-        expect(request.headers['content-type']).toContain("application/json");
-        expect(request.body.user).toBeUndefined();
-    })
-
-    it("should not register user successfully due to no lastname", async () => {
-        const request = await supertest(app).post("/signup").send(fixtures.noLastname);
-        expect(request.status).toBe(500);
-        expect(request.headers['content-type']).toContain("application/json");
-        expect(request.body.user).toBeUndefined();
-    })
-
-    it("should not register user successfully due to no email", async () => {
-        const request = await supertest(app).post("/signup").send(fixtures.noEmail);
-        expect(request.status).toBe(400);
-    })
-
-    it("should not register user successfully due to invalid email", async () => {
-        const request = await supertest(app).post("/signup").send(fixtures.invalidEmail);
-        expect(request.status).toBe(500);
-        expect(request.headers['content-type']).toContain("application/json");
-        expect(request.body.user).toBeUndefined();
-    })
-
-    it("should not register user successfully due to no password", async () => {
-        const request = await supertest(app).post("/signup").send(fixtures.noPassword);
-        expect(request.status).toBe(400);
+            expect(response.status).toBe(200)
+            expect(response.body).toHaveProperty('message')
+            expect(response.body).toHaveProperty('user')      
     })
 })
-
-
 
 
 describe("Login Authentication '/login' POST request", () => {
     it("should log user in successfully", async () => {
-        const request = await supertest(app).post("/login").send(fixtures.validLogin)
-        expect(request.status).toBe(200);
-        expect(request.headers['content-type']).toContain("application/json");
-        expect(request.body).toHaveProperty('token');
+        const response = await request(app).post("/login").send(fixtures.validLogin)
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('message')
+        expect(response.body.user).toHaveProperty("token")  
     })
 
     it("should not log user in successfully due to invalid email", async () => {
-        const request = await supertest(app).post("/login").send(fixtures.invalidEmailLogin)
-        expect(request.status).toBe(404);
-        expect(request.headers['content-type']).toContain("text/html; charset=utf-8");
+        const response = await request(app).post("/login").send(fixtures.invalidEmailLogin)
+        expect(response.status).toBe(404);
+        
     })
 
     it("should not log user in successfully due to invalid password", async () => {
-        const request = await supertest(app).post("/login").send(fixtures.invalidPasswordLogin)
+        const request = await request(app).post("/login").send(fixtures.invalidPasswordLogin)
         expect(request.status).toBe(404);
-        expect(request.headers['content-type']).toContain("text/html; charset=utf-8");
-    })
+        })
 })

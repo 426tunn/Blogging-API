@@ -4,11 +4,26 @@ const passport = require('passport')
 const blogRouter = express.Router();
 
 
-blogRouter.get('/', blogController.getBlogs);
-blogRouter.get('/:id', blogController.getBlogbyID);
-blogRouter.post('/', passport.authenticate('jwt', {session: false}), blogController.addBlog);
-blogRouter.put('/:id', passport.authenticate('jwt', {session: false}),  blogController.updateBlogToPublished);
-blogRouter.delete('/:id', passport.authenticate('jwt', {session: false}),  blogController.deleteBlog);
+blogRouter.get('/',
+ blogController.getBlogs);
 
+blogRouter.get('/:id', 
+blogController.getBlogbyID);
+
+blogRouter.post('/',
+ passport.authenticate('jwt', {session: false}), 
+ blogController.addBlog);
+
+blogRouter.patch('/:id',
+ passport.authenticate('jwt', {session: false}),
+   blogController.updateBlogToPublished);
+
+blogRouter.delete('/:id',
+ passport.authenticate('jwt', {session: false}),
+   blogController.deleteBlog);
+
+blogRouter.put('/:id',
+ passport.authenticate('jwt', {session: false}),
+   blogController.editBlog);
 
 module.exports = blogRouter
