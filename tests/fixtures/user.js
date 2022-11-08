@@ -2,7 +2,7 @@ module.exports = {
     validUser: {
         first_name: "agbolacchan",
         last_name: "babatunde",
-        email: "bigef@gmail.com",
+        email: "biiigchef@gmail.com",
         password: "ogyaranyaaa"
     },
     noFirstname: {
@@ -36,8 +36,8 @@ module.exports = {
         password: ""
     },
     validLogin: {
-        email: "benjohnson@gmail.com",
-        password: "benjohnson"
+        email: "biiigchef@gmail.com",
+        password: "ogyaranyaaa"
     },
     invalidEmailLogin: {
         email: "wrong@gmail.com",

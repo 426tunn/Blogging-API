@@ -13,12 +13,12 @@ app.use('/blog', BlogsRouter)
 app.get('/', (req, res) => {
     console.log('WELCOME')
     res.status(200).send({
-        message: 'welcome here'
+        message: 'Welcome To 426Tunn Blog!!!!'
     })
 });
 
 app.use((err, req, res, next) => {
-    console.log(err);
+    // console.log(err);
     res.status(500).json({
         error: err.message
     })

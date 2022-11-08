@@ -1,25 +1,24 @@
 const request = require('supertest');
 const app = require('../../index')
 const fixtures = require('../fixtures/user')
-const UserModel = require('../../Models/userModel')
-const { connect } = require('../database')
+const mongoose = require ('mongoose')
 
 
-describe('Auth: Signup', () => {
-    let conn;
-
-    beforeAll(async () => {
-        conn = await connect()
+beforeAll(async () => {
+    mongoose.connect('mongodb://localhost:27017')
+     mongoose.connection.on(  'connected', async ()=> {
+        console.log('Mongoose Connected')
+     })
+     mongoose.connection.on('error', ()=> {
+        console.log('connection failed')
+     });
     })
+afterAll(async () => {
+    await mongoose.connection.close()
+})
 
-    afterEach(async () => {
-        await conn.cleanup()
-    })
 
-    afterAll(async () => {
-        await conn.disconnect()
-    })
-
+describe('Signup', () => {
     it('should signup a user', async () => {
         const response = await request(app).post('/signup')
         .set('content-type', 'application/json')
@@ -27,27 +26,30 @@ describe('Auth: Signup', () => {
 
             expect(response.status).toBe(200)
             expect(response.body).toHaveProperty('message')
-            expect(response.body).toHaveProperty('user')      
+            expect(response.body).toHaveProperty('user')
     })
 })
 
 
 describe("Login Authentication '/login' POST request", () => {
+    
     it("should log user in successfully", async () => {
         const response = await request(app).post("/login").send(fixtures.validLogin)
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('message')
-        expect(response.body.user).toHaveProperty("token")  
+        expect(response.body).toHaveProperty("token")
     })
 
     it("should not log user in successfully due to invalid email", async () => {
         const response = await request(app).post("/login").send(fixtures.invalidEmailLogin)
-        expect(response.status).toBe(404);
-        
+        expect(response.status).toBe(500);
+        expect(response.body).toHaveProperty("error")
     })
 
     it("should not log user in successfully due to invalid password", async () => {
-        const request = await request(app).post("/login").send(fixtures.invalidPasswordLogin)
-        expect(request.status).toBe(404);
+        const response = await request(app).post("/login").send(fixtures.invalidPasswordLogin)
+        expect(response.status).toBe(500);
+        expect(response.body).toHaveProperty("error")
         })
+
 })
