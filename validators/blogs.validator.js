@@ -24,8 +24,7 @@ const UpdateBlogSchema = Joi.object({
     title: Joi.string()
     .min(3)
     .max(200)
-    .trim()
-    .required(),
+    .trim(),
    description: Joi.string()
    .min(10)
     .max(2000)
@@ -33,10 +32,9 @@ const UpdateBlogSchema = Joi.object({
     .trim(),
     body: Joi.string()
         .min(10)
-        .max(13000)
-        .required(),
+        .max(13000),
     tags: Joi.string()
-    .required()
+    
 })
 
 async function AddBlogValidationMw  (req, res, next){

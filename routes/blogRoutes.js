@@ -16,7 +16,7 @@ blogRouter.post('/', AddBlogValidationMw,
  passport.authenticate('jwt', {session: false}), 
  blogController.addBlog);
 
-blogRouter.patch('/:id', UpdateBlogValidationMw,
+blogRouter.patch('/:id',
  passport.authenticate('jwt', {session: false}),
    blogController.updateBlogToPublished);
 
@@ -24,7 +24,7 @@ blogRouter.delete('/:id',
  passport.authenticate('jwt', {session: false}),
    blogController.deleteBlog);
 
-blogRouter.put('/:id',
+blogRouter.put('/:id',  UpdateBlogValidationMw,
  passport.authenticate('jwt', {session: false}),
    blogController.editBlog);
 

@@ -4,7 +4,7 @@ const logger = require('../logging/logger');
 
 
 exports.getBlogs = async (req, res) => {
-   const {query } = req;
+   const {query} = req;
    const {
     timestamps,
       author,
