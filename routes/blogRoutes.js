@@ -2,6 +2,8 @@ const express = require('express');
 const blogController = require('../Controllers/blogs')
 const passport = require('passport')
 const blogRouter = express.Router();
+const {AddBlogValidationMw,
+        UpdateBlogValidationMw} = require("../validators/blogs.validator")
 
 
 blogRouter.get('/',
@@ -10,11 +12,11 @@ blogRouter.get('/',
 blogRouter.get('/:id', 
 blogController.getBlogbyID);
 
-blogRouter.post('/',
+blogRouter.post('/', AddBlogValidationMw,
  passport.authenticate('jwt', {session: false}), 
  blogController.addBlog);
 
-blogRouter.patch('/:id',
+blogRouter.patch('/:id', UpdateBlogValidationMw,
  passport.authenticate('jwt', {session: false}),
    blogController.updateBlogToPublished);
 
