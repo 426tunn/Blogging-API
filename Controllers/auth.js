@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const logger = require('../logging/logger');
 require('dotenv').config();
 
 const signup_post = (req, res, next) => {
@@ -7,7 +8,7 @@ const signup_post = (req, res, next) => {
             user: req.user
         })
     } catch(error) {
-        console.log(error);
+        logger.error(error);
         next(error)
     }
     }
